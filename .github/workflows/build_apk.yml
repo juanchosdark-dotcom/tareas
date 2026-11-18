@@ -40,6 +40,8 @@ jobs:
       - name: Compilar APK con Buildozer
         run: |
           export PATH=$PATH:~/.local/bin
+          # Acepta automáticamente las licencias del SDK antes de compilar
+          yes | buildozer android debug || true
           buildozer -v android debug
 
       - name: Subir APK terminado
