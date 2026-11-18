@@ -12,15 +12,38 @@ jobs:
       - name: Descargar codigo
         uses: actions/checkout@v4
 
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            python3-setuptools \
+            python3-virtualenv \
+            git \
+            zip \
+            unzip \
+            autoconf \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libffi-dev \
+            libssl-dev
+
+      - name: Instalar Buildozer y Cython
+        run: |
+          pip3 install --upgrade pip
+          pip3 install --user Cython==0.29.36
+          pip3 install --user buildozer
+
       - name: Compilar APK con Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer -v android debug
-          buildozer_version: stable
+        run: |
+          export PATH=$PATH:~/.local/bin
+          buildozer -v android debug
 
       - name: Subir APK terminado
         uses: actions/upload-artifact@v4
         with:
           name: SimuladorTaylor-APK
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
